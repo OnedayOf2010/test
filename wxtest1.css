@@ -5,5 +5,9 @@
     border: 1px solid #E2E2E2
 }
 .impowerBox .title{
-  display:none;
+    display:none;
+}
+.impowerBox .status p{
+    color: #ffffff;
+    font-size: 12px;
 }
