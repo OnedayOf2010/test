@@ -1,4 +1,7 @@
 @charset "utf-8";
+body{
+    margin: 0;
+}
 .impowerBox .qrcode {
     width: 125px;
     margin-top: 15px;
@@ -10,4 +13,11 @@
 .impowerBox .status p{
     color: #ffffff;
     font-size: 12px;
+}
+.impowerBox .status h4{
+    color: #ffffff;
+    font-size: 12px;
+}
+.impowerBox .status i{
+
 }
