@@ -18,6 +18,6 @@ body{
     color: #ffffff;
     font-size: 12px;
 }
-.impowerBox .status i{
-
+.impowerBox .icon38_msg.succ{
+    background: url(icon_popup.png) 0 -46px no-repeat;
 }
