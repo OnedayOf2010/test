@@ -41,20 +41,19 @@
             var url = data.result.loginUrl;
             console.log(url);
             //自定义css地址
-            var cssHref = "https://onedayof2010.github.io/test/wxtest1.css";
-            cssHref = encodeURIComponent(cssHref)+Math.random();
-        url+="&login_type=jssdk&href="+cssHref;
-        creatIframe(url,$("#login_container"));
-//            var obj = new WxLogin({
-//                id:"login_container",
-//                appid: getUrlParam(url,"appid"),
-//                scope: "snsapi_login",
-//
-//                redirect_uri: getUrlParam(url,"redirect_uri"),
-//                state: "",
-//                style: "",
-//                href: cssHref
-//            });
+            var cssHref = "https://onedayof2010.github.io/test/wxtest1.css?"+Math.random();
+//            cssHref = encodeURIComponent(cssHref)+"?"+Math.random();
+//        url+="&login_type=jssdk&href="+cssHref;
+//        creatIframe(url,$("#login_container"));
+            var obj = new WxLogin({
+                id:"login_container",
+                appid: getUrlParam(url,"appid"),
+                scope: "snsapi_login",
+                redirect_uri: getUrlParam(url,"redirect_uri"),
+                state: getUrlParam(url,"state"),
+                style: "",
+                href: cssHref
+            });
         }
     })
 
