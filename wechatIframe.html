@@ -39,6 +39,7 @@
         dataType:"json",
         success:function(data){
             var url = data.result.loginUrl;
+            url = url.replace("#wechat_redirect","");
             //自定义css地址
             var cssHref = "https://onedayof2010.github.io/test/wxtest1.css?"+Math.random();
 //        url+="&login_type=jssdk&href="+cssHref;
