@@ -15,16 +15,16 @@
     window.showMsg =function(msg){
         $("#msg").html(msg);
     }
-    function creatIframe(url,$dom){
-        var el = document.createElement("iframe");
-        el.width="300px";
-        el.height="400px";
-        el.scrolling="no";
-        el.allowTransparency="true";
-        el.frameBorder="0";
-        el.src=url;
-        $dom.append(el);
-    }
+//    function creatIframe(url,$dom){
+//        var el = document.createElement("iframe");
+//        el.width="300px";
+//        el.height="400px";
+//        el.scrolling="no";
+//        el.allowTransparency="true";
+//        el.frameBorder="0";
+//        el.src=url;
+//        $dom.append(el);
+//    }
     function getUrlParam(url,name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var search =url.substring(url.indexOf("?")+1);
@@ -32,27 +32,44 @@
         if (r != null) return unescape(r[2]);
         return null;
     }
+    function getUrlParams(url) {
+        var result = {},paramParts;
+        var search =url.substring(url.indexOf("?")+1);
+        var params = (search || '').split('&');
+        for(var param in params) {
+            if (params.hasOwnProperty(param)) {
+                paramParts = params[param].split('=');
+                result[paramParts[0]] = decodeURIComponent(paramParts[1] || "");
+            }
+        }
+        return result;
+    }
     !function(a,b){function d(a){var e,c=b.createElement("iframe"),d="https://open.weixin.qq.com/connect/qrconnect?appid="+a.appid+"&scope="+a.scope+"&redirect_uri="+a.redirect_uri+"&state="+a.state+"&login_type=jssdk";d+=a.style?"&style="+a.style:"",d+=a.href?"&href="+a.href:"",c.src=d,c.frameBorder="0",c.allowTransparency="true",c.scrolling="no",c.width="300px",c.height="200px",e=b.getElementById(a.id),e.innerHTML="",e.appendChild(c)}a.WxLogin=d}(window,document);
     $.ajax({
         url:"https://uniform.quanshi.com/rest/user/login/getwxLoginUrl?yhy_p=d",
         type:"GET",
         dataType:"json",
         success:function(data){
-            var url = data.result.loginUrl;
-            url = url.replace("#wechat_redirect","");
-            //自定义css地址
-            var cssHref = "https://onedayof2010.github.io/test/wxtest1.css?"+Math.random();
+
+            if( data.result &&data.result.loginUrl){
+                var url = data.result.loginUrl;
+                url = url.replace("#wechat_redirect","");
+                //自定义css地址
+                var cssHref = "https://onedayof2010.github.io/test/wxtest1.css?"+Math.random();
 //        url+="&login_type=jssdk&href="+cssHref;
 //        creatIframe(url,$("#login_container"));
-            var obj = new WxLogin({
-                id:"login_container",
-                appid: getUrlParam(url,"appid"),
-                scope: "snsapi_login",
-                redirect_uri: getUrlParam(url,"redirect_uri"),
-                state: getUrlParam(url,"state"),
-                style: "",
-                href: cssHref
-            });
+                var params =getUrlParams(url);
+                var obj = new WxLogin({
+                    id:"login_container",
+                    appid: params.appid,
+                    scope: "snsapi_login",
+                    redirect_uri:params.redirect_uri,
+                    state: params.state,
+                    style: "",
+                    href: cssHref
+                });
+            }
+
         }
     })
 
