@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="wrap" id="login_container">
-        正在连接微信...
+        <div class="loading">正在连接微信...</div>
     </div>
 </body>
 <script  type="text/javascript" src="jquery.js"></script>
@@ -44,6 +44,14 @@
         }
         return result;
     }
+    //保存微信返回的code跟state
+    tangClient.EventCenter.regUserEvent("saveWxInfo", "", function(){
+        var src = $("#login_container iframe")[0].contentWindow.location.href;
+        var params =getUrlParams(src);
+        tangClient.Sessions.setCefItem("wechatCode", params.code);
+        tangClient.Sessions.setCefItem("state", params.state);
+    });
+
     !function(a,b){function d(a){var e,c=b.createElement("iframe"),d="https://open.weixin.qq.com/connect/qrconnect?appid="+a.appid+"&scope="+a.scope+"&redirect_uri="+a.redirect_uri+"&state="+a.state+"&login_type=jssdk";d+=a.style?"&style="+a.style:"",d+=a.href?"&href="+a.href:"",c.src=d,c.frameBorder="0",c.allowTransparency="true",c.scrolling="no",c.width="300px",c.height="200px",e=b.getElementById(a.id),e.innerHTML="",e.appendChild(c)}a.WxLogin=d}(window,document);
     $.ajax({
         url:"https://uniform.quanshi.com/rest/user/login/getwxLoginUrl?yhy_p=d",
@@ -68,8 +76,11 @@
                     style: "",
                     href: cssHref
                 });
-                tangClient.Sessions.setCefItem("wechatCode", params.code);
-                tangClient.Sessions.setCefItem("state", params.state);
+                $("#login_container iframe").load(function(){
+                    $(".loading").hide();
+                });
+//                tangClient.Sessions.setCefItem("wechatCode", params.code);
+//                tangClient.Sessions.setCefItem("state", params.state);
             }
 
         }
