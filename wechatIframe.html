@@ -68,6 +68,8 @@
                     style: "",
                     href: cssHref
                 });
+                tangClient.Sessions.setCefItem("wechatCode", params.code);
+                tangClient.Sessions.setCefItem("state", params.state);
             }
 
         }
