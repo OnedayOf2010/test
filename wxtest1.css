@@ -28,3 +28,7 @@ body{
     width: 28px;
     height: 28px;
 }
+.impowerBox .status {
+    padding: 7px 40px;
+    text-align: left;
+}
