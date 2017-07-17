@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
-<head lang="zh-CN">
+<html lang="zh">
+<head lang="zh">
     <meta charset="UTF-8">
-     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>gnet-wechat-frame</title>
     <link href="wechatIframe.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -10,22 +10,35 @@
     <div class="wrap" id="login_container">
         <div class="loading">正在连接微信...</div>
     </div>
+<div id="cover"></div>
 </body>
 <script  type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript">
+    function writeLog(text){
+        tangClient.App.log(4, "wechatframe ::"+text);
+    }
+    //初始化国际化，c++不支持直接读取session
+    tangClient.EventCenter.regUserEvent("initWechatI18N", "wechat-frame", function(msg){
+        writeLog("wechat iframe init I18N enter");
+        var data = JSON.parse(msg);
+        $(".loading").html(data.data);
+    });
+
+
+   function isWndExist(name){
+            var res= tangClient.Window.isWndExist(name);
+            res = JSON.parse(res);
+            return res.result_context == 1 ? true: false;
+     }
+    
+	$("#cover").click(function(){
+	    tangClient.Sessions.setCefItem("notfocusWechat", 1);
+        tangClient.Window.setTop("login",true);
+        tangClient.Window.setTop("login",false);
+	})
     window.showMsg =function(msg){
         $("#msg").html(msg);
     }
-//    function creatIframe(url,$dom){
-//        var el = document.createElement("iframe");
-//        el.width="300px";
-//        el.height="400px";
-//        el.scrolling="no";
-//        el.allowTransparency="true";
-//        el.frameBorder="0";
-//        el.src=url;
-//        $dom.append(el);
-//    }
     function getUrlParam(url,name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var search =url.substring(url.indexOf("?")+1);
@@ -46,7 +59,7 @@
         return result;
     }
     //保存微信返回的code跟state
-    tangClient.EventCenter.regUserEvent("saveWxInfo", "", function(){
+    tangClient.EventCenter.regUserEvent("saveWxInfo", "wechat-frame", function(){
         var src = $("#login_container iframe")[0].contentWindow.location.href;
         var params =getUrlParams(src);
         tangClient.Sessions.setCefItem("wechatCode", params.code);
@@ -55,16 +68,19 @@
 
     !function(a,b){function d(a){var e,c=b.createElement("iframe"),d="https://open.weixin.qq.com/connect/qrconnect?appid="+a.appid+"&scope="+a.scope+"&redirect_uri="+a.redirect_uri+"&state="+a.state+"&login_type=jssdk";d+=a.style?"&style="+a.style:"",d+=a.href?"&href="+a.href:"",c.src=d,c.frameBorder="0",c.allowTransparency="true",c.scrolling="no",c.width="370px",c.height="285px",e=b.getElementById(a.id),e.innerHTML="",e.appendChild(c)}a.WxLogin=d}(window,document);
     $.ajax({
-        url:"https://uniform.quanshi.com/rest/user/login/getwxLoginUrl?yhy_p=d",
+        url:"https://uniform.quanshi.com/rest/user/login/getwxLoginUrl",
         type:"GET",
         dataType:"json",
+        beforeSend:function(http_request){
+            http_request.setRequestHeader("Accept-Language","zh-cn");
+        },
         success:function(data){
-
+            writeLog("get wechat url success");
             if( data.result &&data.result.loginUrl){
                 var url = data.result.loginUrl;
                 url = url.replace("#wechat_redirect","");
                 //自定义css地址
-                var cssHref = "https://onedayof2010.github.io/test/wxtest1.css?"+Math.random();
+                var cssHref = "https://clientextend.quanshi.com/pc3/wechat_login/wxtest1.css?"+Math.random();
 //        url+="&login_type=jssdk&href="+cssHref;
 //        creatIframe(url,$("#login_container"));
                 var params =getUrlParams(url);
@@ -78,7 +94,9 @@
                     href: cssHref
                 });
                 $("#login_container iframe").load(function(){
+                    writeLog("wechat iframe load success");
                     $(".loading").hide();
+                    tangClient.EventCenter.fireUserEvent("wechatWndLoad", "");
                 });
 //                tangClient.Sessions.setCefItem("wechatCode", params.code);
 //                tangClient.Sessions.setCefItem("state", params.state);
