@@ -11,11 +11,11 @@ body{
     display:none;
 }
 .impowerBox .status p{
-    color: #ffffff;
+    color: #999999;
     font-size: 12px;
 }
 .impowerBox .status h4{
-    color: #ffffff;
+    color: #999999;
     font-size: 12px;
 }
 .impowerBox .icon38_msg.succ{
